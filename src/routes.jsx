@@ -1,30 +1,58 @@
-// Import necessary components and functions from react-router-dom.
+import React from "react";
+import { createBrowserRouter } from "react-router-dom";
+import Layout from "./pages/Layout";
+import Home from "./pages/Home";
+import Single from "./pages/Single";
+import {Demo} from "./pages/Demo";
 
-import {
-    createBrowserRouter,
-    createRoutesFromElements,
-    Route,
-} from "react-router-dom";
-import { Layout } from "./pages/Layout";
-import { Home } from "./pages/Home";
-import { Single } from "./pages/Single";
-import { Demo } from "./pages/Demo";
 
-export const router = createBrowserRouter(
-    createRoutesFromElements(
-    // CreateRoutesFromElements function allows you to build route elements declaratively.
-    // Create your routes here, if you want to keep the Navbar and Footer in all views, add your new routes inside the containing Route.
-    // Root, on the contrary, create a sister Route, if you have doubts, try it!
-    // Note: keep in mind that errorElement will be the default page when you don't get a route, customize that page to make your project more attractive.
-    // Note: The child paths of the Layout element replace the Outlet component with the elements contained in the "element" attribute of these child paths.
-
-      // Root Route: All navigation will start from here.
-      <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>} >
-
-        {/* Nested Routes: Defines sub-routes within the BaseHome component. */}
-        <Route path= "/" element={<Home />} />
-        <Route path="/single/:theId" element={ <Single />} />  {/* Dynamic route for single items */}
-        <Route path="/demo" element={<Demo />} />
-      </Route>
-    )
+const NotFound = () => (
+    <div className="bg-dark min-vh-100 d-flex align-items-center justify-content-center">
+        <div className="text-center">
+            <i className="fas fa-robot text-warning display-1 mb-4"></i>
+            <h1 className="text-warning mb-3">404 - Page Not Found</h1>
+            <p className="text-light mb-4 lead">
+                These aren't the droids you're looking for...
+            </p>
+            <div className="d-flex gap-3 justify-content-center">
+                <a href="/" className="btn btn-warning">
+                    <i className="fas fa-home me-2"></i>
+                    Back to Home
+                </a>
+                <button 
+                    className="btn btn-outline-warning"
+                    onClick={() => window.history.back()}
+                >
+                    <i className="fas fa-arrow-left me-2"></i>
+                    Go Back
+                </button>
+            </div>
+        </div>
+    </div>
 );
+
+export const router = createBrowserRouter([
+    {
+        path: "/",
+        element: <Layout />,
+        errorElement: <NotFound />, 
+        children: [
+            {
+                index: true,
+                element: <Home />
+            },
+            {
+                path: "demo",
+                element: <Demo />
+            },
+            {
+                path: "single/:category/:id",
+                element: <Single />
+            },
+            {
+                path: "*",
+                element: <NotFound />
+            }
+        ]
+    }
+]);
